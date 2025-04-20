@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+    body {
+        background-image: url("/static/bg.avif");
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+
+    .style {
+        margin-top: 16%;
+    }
+</style>
+</head>
+
+<body>
+    <div class="container style">
+        <h1 class="text-light">Welcome to NextGen Podcaster</h1>
+        <div class="d-flex justiy-content-center mt-4">
+            {% if user.is_authenticated %}
+            <button class=" border-2 border-primary rounded-pill p-2 m-1 shadow bg-transparent rounded"><a
+                    href="/landing/" class="text-decoration-none text-primary">Home</a></button>
+            <button class=" border-2 border-primary rounded-pill p-2 m-1 shadow bg-transparent rounded"><a
+                    href="{% url 'signout' %}" class="text-decoration-none text-primary">Sign Out</a></button>
+            {% else %}
+            <button class="border border-2 border-primary rounded-pill p-2 m-1 shadow bg-transparent rounded"><a
+                    href="/signup" class="text-decoration-none text-primary">Sign Up</a></button>
+            <button class="border border-2 border-primary rounded-pill p-2 m-1 shadow bg-transparent rounded"><a
+                    href="/signin" class="text-decoration-none text-primary">Sign In</a></button>
+            <button class="border border-2 border-primary rounded-pill p-2 m-1 shadow bg-transparent rounded"><a
+                    href="{% url 'google_login' %}" class="text-decoration-none text-primary"><i
+                        class="fa-brands fa-google"></i>&nbsp;SignIn with
+                    Google</a></button>
+            {% endif %}
+        </div>
+    </div>
+    {% endblock %}

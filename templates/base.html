@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PODCASTER</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    {% block content %}
+
+    {% endblock %}
+
+    <script>
+        // Toggle chatbot visibility
+        const toggleBtn = document.getElementById("toggle-chatbot");
+        const chatbot = document.getElementById("chatbot-container");
+        const closeBtn = document.getElementById("close-chatbot");
+
+        toggleBtn.addEventListener("click", () => {
+            chatbot.style.display = chatbot.style.display === "none" ? "block" : "none";
+        });
+
+        closeBtn.addEventListener("click", () => {
+            chatbot.style.display = "none";
+        });
+
+        // Handle chatbot form submission
+        document.getElementById("chat-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const input = document.getElementById("user-input");
+            const userMessage = input.value;
+            if (!userMessage.trim()) return;
+
+            const chatLog = document.getElementById("chat-log");
+            chatLog.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+            input.value = "";
+
+            try {
+                const response = await fetch("/chatbot/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken"),
+                    },
+                    body: JSON.stringify({ message: userMessage })
+                });
+
+                const data = await response.json();
+                chatLog.innerHTML += `<div><strong>PodPal:</strong> ${data.reply}</div>`;
+                chatLog.scrollTop = chatLog.scrollHeight;
+            } catch (err) {
+                chatLog.innerHTML += `<div style="color:red;"><strong>Error:</strong> Could not contact chatbot.</div>`;
+            }
+        });
+
+        // Function to get CSRF token (for Django)
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                const cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'script.js' %}"></script>
+    <script src="https://kit.fontawesome.com/f08e243ec2.js" crossorigin="anonymous"></script>
+
+    </body>
+
+</html>

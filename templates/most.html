@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/landing/">
+        <i class="fas fa-microphone-alt"></i>
+        PODCASTER
+      </a>
+      <button class="navbar-toggler" type="button" id="sidebar-toggle">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="ms-auto">
+        <button class="btn login-btn">
+          <i class="fas fa-user me-2"></i>
+          {% if user.is_authenticated %}
+          <a href="{% url 'signout' %}" class="text-decoration-none">Sign Out</a>
+          {% endif %}
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <a class="nav-link active" href="/landing/">
+          <i class="fas fa-home"></i>
+          Dashboard
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/upload">
+          <i class="fas fa-cloud-upload-alt"></i>
+          Upload
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="#" id="theme-toggle">
+          <i class="fas fa-sun theme-icon"></i>
+          <span id="theme-text">Light Mode</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        {% if user.is_authenticated %}
+        <a href="{% url 'signout' %}" class="nav-link">
+          <i class="fas fa-sign-out-alt"></i>
+          Sign Out
+        </a>
+        {% endif %}
+      </li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content p-4 mt-5">
+    <h3 class="text-primary mb-2 text-uppercase">{{ podcast.title }}</h3>
+
+    {% if podcast.video %}
+    <!-- If video exists, show video player -->
+    <video controls width="100%" class="rounded shadow mt-3">
+      <source src="/media/{{ podcast.video }}" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    {% elif podcast.audio %}
+    <!-- If video does not exist but audio exists, show audio player -->
+    <audio controls class="rounded shadow mt-3" style="width: 100%;">
+      <source src="/media/{{ podcast.audio }}" type="audio/mp3">
+      Your browser does not support the audio element.
+    </audio>
+    {% else %}
+    <p class="text-danger mt-3">No media file found for this podcast.</p>
+    {% endif %}
+
+    <p class="text-primary mt-3 fs-5">{{ podcast.description }}</p>
+
+    <a href="{% url 'landing' %}" class="btn btn-secondary mt-2">Back to Dashboard</a>
+  </div>
+
+
+  <!-- Bot Toggle Button -->
+  <button id="toggle-chatbot" class="btn btn-primary rounded-circle shadow position-fixed"
+    style="bottom: 20px; right: 20px; z-index: 9999;">
+    🤖
+  </button>
+
+  <!-- Chatbot Container -->
+  <div id="chatbot-container" class="card shadow-lg position-fixed"
+    style="bottom: 80px; right: 20px; width: 300px; display: none; z-index: 9998;">
+    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+      🎙️ PodPal - Ask Me Anything
+      <button type="button" class="btn-close btn-close-white btn-sm" aria-label="Close" id="close-chatbot"></button>
+    </div>
+    <div id="chat-log" class="card-body overflow-auto text-primary" style="height: 200px; font-size: 14px;">
+      <!-- Chat messages appear here -->
+    </div>
+    <form id="chat-form" class="d-flex border-top bg-light">
+      <input type="text" id="user-input" class="form-control border-0 bg-light" placeholder="Ask something..." />
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+  {% endblock %}
