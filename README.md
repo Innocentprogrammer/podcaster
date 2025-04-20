@@ -126,6 +126,6 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 ## 🧑 Author
 
 **Mratyunjay Saxena**  
-[LinkedIn](LinkedIn: https://www.linkedin.com/in/mratyunjay-saxena-963176226/) | [GitHub](https://github.com/innocentprogrammer)
+[LinkedIn](https://www.linkedin.com/in/mratyunjay-saxena-963176226/) | [GitHub](https://github.com/innocentprogrammer)
 
 ---
